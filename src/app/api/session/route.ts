@@ -11,9 +11,8 @@ const RATE_LIMIT = {
 };
 
 const ALLOWED_ORIGINS = [
-  process.env.NEXT_PUBLIC_APP_URL || '',
+  process.env.NEXT_PUBLIC_APP_URL,
   'http://localhost:3000',
-  'http://localhost:3001',
 ].filter(Boolean);
 
 // ============================================
@@ -153,12 +152,11 @@ function validateRequest(body: { addresses: { address: string; blockchains: stri
 function checkOrigin(request: NextRequest): { allowed: boolean } {
   const origin = request.headers.get('origin');
   
-  // Allow requests with no origin (e.g., server-to-server, Postman)
+  // Allow requests with no origin (e.g., server-to-server)
   if (!origin) {
     return { allowed: true };
   }
 
-  // Check against allowed origins
   const allowed = ALLOWED_ORIGINS.some(allowedOrigin => {
     if (!allowedOrigin) return false;
     return origin === allowedOrigin || origin.startsWith(allowedOrigin);
