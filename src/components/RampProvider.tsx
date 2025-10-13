@@ -96,7 +96,7 @@ const openRamp = async (params: RampParams) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        addresses: [{ address: evmAddress, blockchains: ['base-sepolia'] }],
+        addresses: [{ address: evmAddress, blockchains: ['base'] }],
         assets: ['USDC'],
       }),
     })
