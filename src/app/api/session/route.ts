@@ -13,6 +13,7 @@ const RATE_LIMIT = {
 const ALLOWED_ORIGINS = [
   process.env.NEXT_PUBLIC_APP_URL,
   'http://localhost:3000',
+  'https://holibobs.vercel.app',
 ].filter(Boolean);
 
 // ============================================
