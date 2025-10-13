@@ -1,11 +1,5 @@
 import { generateJwt } from '@coinbase/cdp-sdk/auth';
 
-interface JWTOptions {
-  requestMethod: string;
-  requestPath: string;
-  requestHost?: string;
-}
-
 export type RampType = 'onramp' | 'offramp';
 
 export interface SessionTokenRequest {
@@ -22,32 +16,23 @@ export interface SessionTokenResponse {
   channel_id?: string;
 }
 
-async function generateCoinbaseJWT(options: JWTOptions): Promise<string> {
-  const { requestMethod, requestPath, requestHost = 'api.developer.coinbase.com' } = options;
-
-  return await generateJwt({
-    apiKeyId: process.env.CDP_API_KEY_NAME!,
-    apiKeySecret: process.env.CDP_API_KEY_PRIVATE_KEY!,
-    requestMethod,
-    requestHost,
-    requestPath,
-    expiresIn: 120,
-  });
-}
-
 export async function createSessionToken(
   request: SessionTokenRequest
 ): Promise<SessionTokenResponse> {
   const path = '/onramp/v1/token'; // for both onramp AND offramp
-  
-  const jwt = await generateCoinbaseJWT({
+
+  const jwt = await generateJwt({
+    apiKeyId: process.env.CDP_API_KEY_NAME!,
+    apiKeySecret: process.env.CDP_API_KEY_PRIVATE_KEY!,
     requestMethod: 'POST',
+    requestHost: 'api.developer.coinbase.com',
     requestPath: path,
+    expiresIn: 120,
   });
 
    const payload = {
     ...request,
-    clientIp: request.clientIp || '127.0.0.1',
+    clientIp: request.clientIp || '8.8.8.8',
   };
 
   const response = await fetch(`https://api.developer.coinbase.com${path}`, {
@@ -67,22 +52,23 @@ export async function createSessionToken(
   return response.json();
 }
 
+export const isSandbox = process.env.NEXT_PUBLIC_IS_SANDBOX === 'true';
+
 export function buildRampURL(
   type: RampType,
   sessionToken: string,
   params: Record<string, string> = {}
 ): string {
-  const isTestnet = params.defaultNetwork?.includes('sepolia');
-  const domain = isTestnet ? 'pay-sandbox.coinbase.com' : 'pay.coinbase.com';
-  
+  const domain = isSandbox ? 'pay-sandbox.coinbase.com' : 'pay.coinbase.com';
+
   // Production uses paths, sandbox doesn't
   let path = '';
-  if (!isTestnet) {
+  if (!isSandbox) {
     path = type === 'onramp' ? '/buy/select-asset' : '/v3/sell/input';
   }
-  
-  const url = new URL(`https://${domain}${path}?redirectUrl=http://localhost:3000`);
-  
+
+  const url = new URL(`https://${domain}${path}`);
+
   url.searchParams.set('sessionToken', sessionToken);
   
   const allowedParams = [
@@ -101,7 +87,5 @@ export function buildRampURL(
     }
   });
 
-  console.log('Ramp URL:', url.toString());
-  
   return url.toString();
 }

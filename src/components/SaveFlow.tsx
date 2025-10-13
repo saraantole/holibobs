@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { useSendEvmTransaction, useCurrentUser, useEvmAddress } from '@coinbase/cdp-hooks';
-import { encodeFunctionData, parseUnits } from 'viem';
+import { createPublicClient, encodeFunctionData, http, parseGwei, parseUnits } from 'viem';
 import { CONTRACTS, ERC20_ABI, PRIZE_VAULT_ABI } from '@/lib/contracts';
 import { useRamp } from './RampProvider';
+import { isSandbox } from '@/lib/utils';
+import { base, baseSepolia } from 'viem/chains';
 
 export default function SaveFlow() {
   const { evmAddress } = useEvmAddress();
@@ -21,7 +23,7 @@ export default function SaveFlow() {
     await openRamp({
       type: 'onramp',
       amount,
-      network: 'base-sepolia',
+      network: isSandbox ? 'base-sepolia' : 'base',
       onSuccess: async () => {
         const shouldDeposit = confirm(
           `Purchase complete! Deposit $${amount} USDC to your holiday savings?`
@@ -29,6 +31,21 @@ export default function SaveFlow() {
         if (shouldDeposit) await depositToVault();
       },
       onError: (error) => alert(`Error: ${error.message}`),
+      onClose: () => {
+      // This fires ALWAYS when popup closes, regardless of reason
+      if (isSandbox) {
+        console.log('🔁 Refreshing balances in sandbox...')
+
+        const shouldDeposit = confirm(
+          `Purchase complete! Deposit $${amount} USDC to your holiday savings?`
+        );
+        if (shouldDeposit) depositToVault();
+      } else {
+        console.log('🔁 Refreshing balances in production...')
+      }
+
+      // TODO: Refresh balances, show notification, etc.
+    }
     });
   };
 
@@ -37,12 +54,15 @@ export default function SaveFlow() {
 
     setIsDepositing(true);
     const amountWei = parseUnits(amount, 6);
+    const chainId = isSandbox ? 84532 : 8453;
 
     try {
       setStep('approve');
-      await sendEvmTransaction({
+      
+      //TODO
+/*       await sendEvmTransaction({
         evmAccount,
-        network: 'base-sepolia',
+        network: isSandbox ? 'base-sepolia' : 'base',
         transaction: {
           to: CONTRACTS.usdc,
           data: encodeFunctionData({
@@ -50,14 +70,19 @@ export default function SaveFlow() {
             functionName: 'approve',
             args: [CONTRACTS.prizeVault, amountWei],
           }),
-          chainId: 84532,
+          chainId,
+          maxFeePerGas: parseGwei('0.1'),
+          maxPriorityFeePerGas: parseGwei('0.01'),
         },
       });
 
+      console.log('✅ Approval successful');
+
       setStep('deposit');
+      
       await sendEvmTransaction({
         evmAccount,
-        network: 'base-sepolia',
+        network: isSandbox ? 'base-sepolia' : 'base',
         transaction: {
           to: CONTRACTS.prizeVault,
           data: encodeFunctionData({
@@ -65,14 +90,17 @@ export default function SaveFlow() {
             functionName: 'deposit',
             args: [amountWei, evmAddress],
           }),
-          chainId: 84532,
+          chainId,
+          maxFeePerGas: parseGwei('0.1'),
+          maxPriorityFeePerGas: parseGwei('0.01'),
         },
-      });
+      }); */
 
+      console.log('✅ Deposit successful');
       alert(`🎉 $${amount} saved and earning prizes!`);
     } catch (error) {
       console.error('Deposit failed:', error);
-      alert('Deposit failed. Try again later.');
+      alert(`Deposit failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setStep('idle');
       setIsDepositing(false);
