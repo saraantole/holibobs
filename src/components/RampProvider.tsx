@@ -12,7 +12,7 @@ interface RampContextType {
 interface RampParams {
   type: RampType;
   amount: string;
-  network?: string;
+  network: string;
   onSuccess?: () => void;
   onError?: (error: Error) => void;
   onClose?: () => void;

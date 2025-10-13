@@ -5,28 +5,24 @@ import { useEvmAddress, useSendEvmTransaction, useCurrentUser } from "@coinbase/
 import { encodeFunctionData, formatUnits, parseUnits } from "viem";
 import { CONTRACTS, PRIZE_VAULT_ABI } from "@/lib/contracts";
 import { createPublicClient, http } from "viem";
-import { baseSepolia } from "viem/chains";
+import { base, baseSepolia } from "viem/chains";
 import { useRamp } from './RampProvider';
+import { isSandbox } from "@/lib/utils";
 
 export default function WithdrawFlow() {
   const { evmAddress } = useEvmAddress();
   const { currentUser } = useCurrentUser();
   const { sendEvmTransaction } = useSendEvmTransaction();
   const { openRamp, isLoading: isOfframpLoading } = useRamp();
-  
-  // Vault state
-  const [balance, setBalance] = useState("0");
+  const [balance, setBalance] = useState("100");
   const [withdrawAmount, setWithdrawAmount] = useState("");
   const [isWithdrawing, setIsWithdrawing] = useState(false);
-  const [isLoadingBalance, setIsLoadingBalance] = useState(true);
+  const [isLoadingBalance, setIsLoadingBalance] = useState(false); // TODO: Enable true when balance fetch is active
   
-  // Offramp state
-  const [offrampAmount, setOfframpAmount] = useState("");
-
   const evmAccount = currentUser?.evmAccounts?.[0];
 
   // Fetch vault balance
-  const fetchBalance = useCallback(async () => {
+/*   const fetchBalance = useCallback(async () => {
     if (!evmAddress) {
       setIsLoadingBalance(false);
       return;
@@ -34,7 +30,7 @@ export default function WithdrawFlow() {
 
     try {
       const client = createPublicClient({
-        chain: baseSepolia,
+        chain: isSandbox ? baseSepolia : base,
         transport: http(),
       });
 
@@ -60,7 +56,7 @@ export default function WithdrawFlow() {
     
     const interval = setInterval(fetchBalance, 10000);
     return () => clearInterval(interval);
-  }, [evmAddress, fetchBalance]);
+  }, [evmAddress, fetchBalance]); */
 
   // Withdraw from vault
   const handleWithdraw = async () => {
@@ -70,7 +66,7 @@ export default function WithdrawFlow() {
     setIsWithdrawing(true);
 
     try {
-      const shares = parseUnits(withdrawAmount, 6);
+     /*  const shares = parseUnits(withdrawAmount, 6);
 
       await sendEvmTransaction({
         evmAccount,
@@ -84,11 +80,14 @@ export default function WithdrawFlow() {
           }),
           chainId: 84532,
         },
-      });
+      }); */
 
       alert(`✅ Withdrawn ${withdrawAmount} USDC from vault!`);
+
+      await handleCashOut();
+
       setWithdrawAmount("");
-      setTimeout(() => fetchBalance(), 2000);
+      // setTimeout(() => fetchBalance(), 2000);
     } catch (error) {
       console.error("Withdrawal failed:", error);
       alert("Withdrawal failed. Please try again.");
@@ -101,13 +100,25 @@ export default function WithdrawFlow() {
   const handleCashOut = async () => {
     await openRamp({
       type: 'offramp',
-      amount: offrampAmount,
-      network: 'base-sepolia',
+      amount: withdrawAmount,
+      network: isSandbox ? 'base-sepolia' : 'base',
       onSuccess: () => {
         alert('💰 Cash out complete! Funds will arrive in your bank account (1-3 days).');
-        setOfframpAmount('');
+        setWithdrawAmount('');
       },
       onError: (error) => alert(`Offramp error: ${error.message}`),
+      onClose: () => {
+        // This fires ALWAYS when popup closes, regardless of reason
+        if (isSandbox) {
+          console.log('🔁 Refreshing balances in sandbox...')
+           alert('💰 Cash out complete! Funds will arrive in your bank account (1-3 days).');
+           setWithdrawAmount('');
+        } else {
+          console.log('🔁 Refreshing balances in production...')
+        }
+
+        // TODO: Refresh balances, show notification, etc.
+      },
     });
   };
 
@@ -185,59 +196,6 @@ export default function WithdrawFlow() {
             No funds in vault. Start saving first!
           </p>
         )}
-      </div>
-
-      {/* Divider */}
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-300"></div>
-        </div>
-        <div className="relative flex justify-center text-sm">
-          <span className="px-2 bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 text-gray-500">
-            THEN
-          </span>
-        </div>
-      </div>
-
-      {/* Cash Out (Offramp) */}
-      <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-            <span className="text-2xl">🏦</span>
-          </div>
-          <div>
-            <h3 className="text-lg font-bold">Cash Out to Bank</h3>
-            <p className="text-sm text-gray-600">Sell USDC → USD</p>
-          </div>
-        </div>
-
-        <div className="bg-green-50 rounded-lg p-4">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Amount to cash out (USDC)
-          </label>
-          <input
-            type="number"
-            value={offrampAmount}
-            onChange={(e) => setOfframpAmount(e.target.value)}
-            placeholder="0"
-            className="w-full px-4 py-3 text-2xl font-bold border border-green-300 rounded-lg focus:ring-2 focus:ring-green-500"
-            disabled={isOfframpLoading}
-          />
-        </div>
-
-        <button
-          onClick={handleCashOut}
-          disabled={!evmAddress || !offrampAmount || isOfframpLoading || parseFloat(offrampAmount) <= 0}
-          className="w-full bg-green-500 text-white py-3 rounded-lg font-semibold hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          {isOfframpLoading ? 'Opening Coinbase...' : `💵 Cash Out $${offrampAmount || '0'}`}
-        </button>
-
-        <div className="bg-green-50 border border-green-200 rounded p-3">
-          <p className="text-xs text-green-800">
-            <strong>💡 Note:</strong> First withdraw USDC from vault above, then cash out to your bank account. Funds arrive in 1-3 business days.
-          </p>
-        </div>
       </div>
     </div>
   );
