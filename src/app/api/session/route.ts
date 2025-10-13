@@ -94,7 +94,7 @@ function getClientIp(request: NextRequest): string {
   return '8.8.8.8';
 }
 
-function validateRequest(body: any): { valid: boolean; error?: string } {
+function validateRequest(body: { addresses: string | any[]; assets: string | any[]; }): { valid: boolean; error?: string } {
   // Check addresses field
   if (!body.addresses || !Array.isArray(body.addresses)) {
     return { valid: false, error: 'addresses must be an array' };
