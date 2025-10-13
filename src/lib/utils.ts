@@ -61,11 +61,7 @@ export function buildRampURL(
 ): string {
   const domain = isSandbox ? 'pay-sandbox.coinbase.com' : 'pay.coinbase.com';
 
-  // Production uses paths, sandbox doesn't
-  let path = '';
-  if (!isSandbox) {
-    path = type === 'onramp' ? '/buy/select-asset' : '/v3/sell/input';
-  }
+  const path = type === 'onramp' ? '/buy/select-asset' : '/v3/sell/input';
 
   const url = new URL(`https://${domain}${path}`);
 
