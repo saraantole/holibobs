@@ -52,7 +52,7 @@ export async function createSessionToken(
   return response.json();
 }
 
-export const isSandbox = process.env.NEXT_PUBLIC_IS_SANDBOX === 'true';
+export const isSandbox = true; // TODO: process.env.NEXT_PUBLIC_IS_SANDBOX === 'true';
 
 export function buildRampURL(
   type: RampType,
