@@ -10,7 +10,7 @@ import { isSandbox } from "@/lib/utils";
 export default function Home() {
   const { isSignedIn } = useIsSignedIn();
 
-  console.log({isSandbox})
+  console.log(`Environment: ${isSandbox ? "Sandbox" : "Production"}`);
 
   if (!isSignedIn) {
     return (
