@@ -5,9 +5,12 @@ import Auth from "@/components/Auth";
 import PrizeSimulator from "@/components/PrizeSimulator";
 import SaveFlow from "@/components/SaveFlow";
 import WithdrawFlow from "@/components/WithdrawFlow";
+import { isSandbox } from "@/lib/utils";
 
 export default function Home() {
   const { isSignedIn } = useIsSignedIn();
+
+  console.log({isSandbox})
 
   if (!isSignedIn) {
     return (

@@ -123,7 +123,7 @@ export function RampProvider({ children }: { children: ReactNode }) {
         fiatCurrency: 'USD',
         ...(params.type === 'onramp'
           ? { presetFiatAmount: params.amount }
-          : { presetCryptoAmount: params.amount, redirectUrl: window.location.origin }),
+          : { presetCryptoAmount: params.amount, redirectUrl: process.env.NEXT_PUBLIC_APP_URL! }),
         partnerUserId: currentUser?.userId || '',
       })
 
