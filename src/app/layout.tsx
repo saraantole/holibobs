@@ -1,14 +1,9 @@
 import type { Metadata } from 'next'
-import { Newsreader } from 'next/font/google'
 import './globals.css'
 import Providers from './providers'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
-
-const newsReader = Newsreader({
-  subsets: ['latin'],
-  variable: '--font-newsreader',
-})
+import { newsReader } from '@/assets/fonts'
 
 export const metadata: Metadata = {
   title: 'HoliBobs',
