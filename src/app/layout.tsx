@@ -1,25 +1,40 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
-import Providers from "./providers";
+import type { Metadata } from 'next'
+import { Newsreader } from 'next/font/google'
+import './globals.css'
+import Providers from './providers'
+import Header from '@/components/Header'
+import Footer from '@/components/Footer'
 
-const inter = Inter({ subsets: ["latin"] });
+const newsReader = Newsreader({
+  subsets: ['latin'],
+  variable: '--font-newsreader',
+})
 
 export const metadata: Metadata = {
-  title: "Holibobs - Save for Your Dream Holiday",
-  description: "Prize-linked savings for your next vacation",
-};
+  title: 'HoliBobs',
+  description: 'Save for your holidays and get rewards',
+}
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
+
+
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <Providers>{children}</Providers>
+      <Providers>
+      <body className={`${newsReader.className} min-h-screen`}>
+        <Header />
+        <div className="max-w-4xl mx-auto">
+          <main>
+            {children}
+          </main>
+          <Footer />
+        </div>
       </body>
+      </Providers>
     </html>
-  );
+  )
 }
