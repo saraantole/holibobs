@@ -32,7 +32,7 @@ export default function SignUp() {
 
   if (flowId) {
     return (
-      <div className="w-full pt-30 p-4 bg-blue flex flex-col items-center">
+      <div className="w-full pt-30 p-5 bg-blue flex flex-col items-center">
         <h2 className={`text-3xl font-bold mb-6 ${caprasimo.className}`}>
           Check your email
         </h2>
@@ -73,7 +73,7 @@ export default function SignUp() {
   }
 
   return (
-    <div className="w-full pt-30 p-4 bg-blue flex flex-col items-center">
+    <div className="w-full pt-30 p-5 bg-blue flex flex-col items-center">
       <h1 className={`text-3xl font-bold mb-6 ${caprasimo.className}`}>
         Let's get some details
       </h1>

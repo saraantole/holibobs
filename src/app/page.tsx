@@ -52,7 +52,7 @@ export default function Home() {
       {/* Content */}
       <div className="-mt-30 md:-mt-8 p-6 pb-10 space-y-8 bg-blue backdrop-blur-sm rounded-tr-3xl rounded-tl-3xl shadow-xl overflow-hidden">
         {/* Title Section */}
-        <div className="md:w-[80%] border-dotted border-b-2 border-b-white p-6">
+        <div className="md:w-[80%] border-dotted border-b-2 border-b-white py-6">
           <h1 className={`text-3xl font-bold mb-3 ${caprasimo.className}`}>
             The yearly summer holiday can be expensive
           </h1>
@@ -122,7 +122,7 @@ export default function Home() {
               {plans.map((plan, index) => (
                 <div
                   key={index}
-                  className={`w-30 h-30 rounded-2xl bg-gradient-to-br ${plan.gradient} shadow-lg flex flex-col items-center justify-center p-2 ${plan.borderColor} border-2`}
+                  className={`w-26 h-26 rounded-2xl bg-gradient-to-br ${plan.gradient} shadow-lg flex flex-col items-center justify-center p-2 ${plan.borderColor} border-2`}
                 >
                   <h2
                     className={`${caprasimo.className} text-lg font-bold ${plan.textColor} mb-2`}
