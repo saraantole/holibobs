@@ -1,14 +1,14 @@
-'use client'
+'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
 import { useState } from 'react';
-import { 
-  useSignInWithEmail, 
-  useVerifyEmailOTP, 
-  useCurrentUser, 
-  useIsSignedIn, 
-  useSignOut, 
-  useEvmAddress 
+import {
+  useSignInWithEmail,
+  useVerifyEmailOTP,
+  useCurrentUser,
+  useIsSignedIn,
+  useSignOut,
+  useEvmAddress,
 } from '@coinbase/cdp-hooks';
 
 interface AuthContextType {
@@ -31,8 +31,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [email, setEmail] = useState("");
-  const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState('');
+  const [otp, setOtp] = useState('');
   const [flowId, setFlowId] = useState<string | null>(null);
   const [isEmailPending, setIsEmailPending] = useState(false);
   const [isVerifyPending, setIsVerifyPending] = useState(false);
@@ -47,13 +47,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsEmailPending(true);
-    
+
     try {
       const result = await signInWithEmail({ email });
       setFlowId(result.flowId);
     } catch (error) {
-      console.error("Failed to send OTP:", error);
-      alert("Failed to send OTP. Please try again.");
+      console.error('Failed to send OTP:', error);
+      alert('Failed to send OTP. Please try again.');
     } finally {
       setIsEmailPending(false);
     }
@@ -68,11 +68,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       const { isNewUser } = await verifyEmailOTP({ flowId, otp });
       if (isNewUser) {
-        alert("Welcome! Your wallet has been created automatically 🎉");
+        alert('Welcome! Your wallet has been created automatically 🎉');
       }
     } catch (error) {
-      console.error("Verification failed:", error);
-      alert("Invalid OTP. Please try again.");
+      console.error('Verification failed:', error);
+      alert('Invalid OTP. Please try again.');
     } finally {
       setIsVerifyPending(false);
     }
@@ -80,14 +80,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const handleDifferentEmail = () => {
     setFlowId(null);
-    setOtp("");
+    setOtp('');
   };
 
   const handleSignOut = async () => {
     await signOut();
     setFlowId(null);
-    setEmail("");
-    setOtp("");
+    setEmail('');
+    setOtp('');
   };
 
   const value = {

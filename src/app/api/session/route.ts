@@ -21,8 +21,8 @@ const ALLOWED_ORIGINS = [
 
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
 
-function checkRateLimit(ip: string): { 
-  allowed: boolean; 
+function checkRateLimit(ip: string): {
+  allowed: boolean;
   remaining: number;
   resetTime: number;
 } {
@@ -45,8 +45,8 @@ function checkRateLimit(ip: string): {
       count: 1,
       resetTime,
     });
-    return { 
-      allowed: true, 
+    return {
+      allowed: true,
       remaining: RATE_LIMIT.maxRequests - 1,
       resetTime,
     };
@@ -54,8 +54,8 @@ function checkRateLimit(ip: string): {
 
   if (record.count >= RATE_LIMIT.maxRequests) {
     // Rate limit exceeded
-    return { 
-      allowed: false, 
+    return {
+      allowed: false,
       remaining: 0,
       resetTime: record.resetTime,
     };
@@ -63,8 +63,8 @@ function checkRateLimit(ip: string): {
 
   // Increment count
   record.count++;
-  return { 
-    allowed: true, 
+  return {
+    allowed: true,
     remaining: RATE_LIMIT.maxRequests - record.count,
     resetTime: record.resetTime,
   };
@@ -78,22 +78,25 @@ function getClientIp(request: NextRequest): string {
   if (process.env.NODE_ENV === 'development') {
     return '8.8.8.8';
   }
-  
+
   // In production, get real IP from headers
   const forwarded = request.headers.get('x-forwarded-for');
   const realIp = request.headers.get('x-real-ip');
   const cfConnectingIp = request.headers.get('cf-connecting-ip');
   const vercelIp = request.headers.get('x-vercel-forwarded-for');
-  
+
   if (vercelIp) return vercelIp.split(',')[0].trim();
   if (forwarded) return forwarded.split(',')[0].trim();
   if (realIp) return realIp;
   if (cfConnectingIp) return cfConnectingIp;
-  
+
   return '8.8.8.8';
 }
 
-function validateRequest(body: { addresses: { address: string; blockchains: string[] }[]; assets: string[] }): { valid: boolean; error?: string } {
+function validateRequest(body: {
+  addresses: { address: string; blockchains: string[] }[];
+  assets: string[];
+}): { valid: boolean; error?: string } {
   // Check addresses field
   if (!body.addresses || !Array.isArray(body.addresses)) {
     return { valid: false, error: 'addresses must be an array' };
@@ -119,7 +122,10 @@ function validateRequest(body: { addresses: { address: string; blockchains: stri
     }
 
     if (!addr.blockchains || !Array.isArray(addr.blockchains)) {
-      return { valid: false, error: 'each address must have blockchains array' };
+      return {
+        valid: false,
+        error: 'each address must have blockchains array',
+      };
     }
 
     if (addr.blockchains.length === 0) {
@@ -151,7 +157,7 @@ function validateRequest(body: { addresses: { address: string; blockchains: stri
 
 function checkOrigin(request: NextRequest): { allowed: boolean } {
   const origin = request.headers.get('origin');
-  
+
   // Allow requests with no origin (e.g., server-to-server)
   if (!origin) {
     return { allowed: true };
@@ -187,17 +193,17 @@ export async function POST(request: NextRequest) {
 
     // 3. Check rate limit
     const rateLimit = checkRateLimit(clientIp);
-    
+
     if (!rateLimit.allowed) {
       const retryAfter = Math.ceil((rateLimit.resetTime - Date.now()) / 1000);
       console.warn(`Rate limit exceeded for IP: ${clientIp}`);
-      
+
       return NextResponse.json(
-        { 
+        {
           error: 'Too many requests. Please try again later.',
           retryAfter,
         },
-        { 
+        {
           status: 429,
           headers: {
             'X-RateLimit-Limit': String(RATE_LIMIT.maxRequests),
@@ -216,7 +222,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
       return NextResponse.json(
         { error: 'Invalid JSON in request body' },
-        { 
+        {
           status: 400,
           headers: {
             'X-RateLimit-Limit': String(RATE_LIMIT.maxRequests),
@@ -231,7 +237,7 @@ export async function POST(request: NextRequest) {
     if (!validation.valid) {
       return NextResponse.json(
         { error: validation.error },
-        { 
+        {
           status: 400,
           headers: {
             'X-RateLimit-Limit': String(RATE_LIMIT.maxRequests),
@@ -268,20 +274,18 @@ export async function POST(request: NextRequest) {
         'X-RateLimit-Reset': String(Math.floor(rateLimit.resetTime / 1000)),
       },
     });
-
   } catch (error) {
     console.error('Session token error:', error);
-    
+
     // Don't expose internal error details to client
-    const errorMessage = error instanceof Error 
-      ? error.message 
-      : 'Unknown error';
-    
+    const errorMessage =
+      error instanceof Error ? error.message : 'Unknown error';
+
     // Log full error internally
     if (process.env.NODE_ENV === 'development') {
       console.error('Full error:', errorMessage);
     }
-    
+
     return NextResponse.json(
       { error: 'Failed to create session token' },
       { status: 500 }
@@ -296,9 +300,9 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   return NextResponse.json(
     { error: 'Method not allowed. Use POST.' },
-    { 
+    {
       status: 405,
-      headers: { 'Allow': 'POST' },
+      headers: { Allow: 'POST' },
     }
   );
 }
@@ -306,9 +310,9 @@ export async function GET() {
 export async function PUT() {
   return NextResponse.json(
     { error: 'Method not allowed. Use POST.' },
-    { 
+    {
       status: 405,
-      headers: { 'Allow': 'POST' },
+      headers: { Allow: 'POST' },
     }
   );
 }
@@ -316,9 +320,9 @@ export async function PUT() {
 export async function DELETE() {
   return NextResponse.json(
     { error: 'Method not allowed. Use POST.' },
-    { 
+    {
       status: 405,
-      headers: { 'Allow': 'POST' },
+      headers: { Allow: 'POST' },
     }
   );
 }
@@ -326,9 +330,9 @@ export async function DELETE() {
 export async function PATCH() {
   return NextResponse.json(
     { error: 'Method not allowed. Use POST.' },
-    { 
+    {
       status: 405,
-      headers: { 'Allow': 'POST' },
+      headers: { Allow: 'POST' },
     }
   );
 }

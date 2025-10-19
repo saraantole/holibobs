@@ -1,10 +1,10 @@
-import { Caprasimo, Newsreader } from 'next/font/google'
+import { Caprasimo, Newsreader } from 'next/font/google';
 
 export const newsReader = Newsreader({
-  subsets: ['latin']
-})
+  subsets: ['latin'],
+});
 
 export const caprasimo = Caprasimo({
   subsets: ['latin'],
-  weight: ['400']
-})
+  weight: ['400'],
+});

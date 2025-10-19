@@ -1,10 +1,10 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme {
   --color-darkBlue: #000073;
-  --color-blue: #B7EFFE;
+  --color-blue: #b7effe;
   --color-lightBlue: #ddf8ff;
-  --color-orange: #F07610;
+  --color-orange: #f07610;
   --font-family: 'Newsreader', serif;
 }
 

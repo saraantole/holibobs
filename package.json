@@ -6,17 +6,19 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
+    "format": "prettier --write .",
     "lint": "eslint"
   },
   "dependencies": {
     "@coinbase/cdp-core": "^0.0.43",
     "@coinbase/cdp-hooks": "^0.0.43",
     "@coinbase/cdp-sdk": "^1.38.4",
-    "@tanstack/react-query": "^5.90.2",
+    "@generationsoftware/hyperstructure-client-js": "^1.22.2",
+    "@tanstack/react-query": "^5.90.3",
     "next": "15.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "viem": "^2.38.0"
+    "viem": "^2.38.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -26,6 +28,9 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.5.4",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
