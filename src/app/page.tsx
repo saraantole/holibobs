@@ -291,7 +291,7 @@ export default function Home() {
 
       <Link
         href={isSignedIn && currentUser ? '/dashboard' : '/signup'}
-        className="fixed bottom-6 left-0 right-0 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[300px] z-50 w-[85vw] mx-auto md:mx-0 rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center"
+        className="fixed bottom-6 left-0 right-0 md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[300px] z-50 w-[85vw] mx-auto md:mx-0 rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center  hover:cursor-pointer"
       >
         {isSignedIn && currentUser ? 'Go to Dashboard' : 'Sign Up'}
       </Link>

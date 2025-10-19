@@ -3,7 +3,7 @@ import './globals.css';
 import Providers from './providers';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { newsReader } from '@/assets/fonts';
+import GlobalStyleWrapper from './globalStyleWrapper';
 
 export const metadata: Metadata = {
   title: 'HoliBobs',
@@ -18,13 +18,15 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Providers>
-        <body className={`${newsReader.className} min-h-screen`}>
-          <Header />
-          <div className="max-w-4xl mx-auto overflow-x-hidden">
-            <main>{children}</main>
-            <Footer />
-          </div>
-        </body>
+        <GlobalStyleWrapper>
+          <body>
+            <Header />
+            <div className="max-w-4xl mx-auto overflow-x-hidden">
+              <main>{children}</main>
+              <Footer />
+            </div>
+          </body>
+        </GlobalStyleWrapper>
       </Providers>
     </html>
   );
