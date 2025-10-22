@@ -22,7 +22,6 @@ interface AuthContextType {
   currentUser: User | null;
   isSignedIn: boolean;
   evmAddress: Address | null;
-  evmSmartAddress: Address | null;
   setEmail: (email: string) => void;
   setOtp: (otp: string) => void;
   handleSendOTP: (e: React.FormEvent) => Promise<void>;
@@ -102,7 +101,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     currentUser,
     isSignedIn,
     evmAddress,
-    evmSmartAddress: currentUser?.evmSmartAccounts?.[0] || null,
     setEmail,
     setOtp,
     handleSendOTP,
