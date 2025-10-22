@@ -9,7 +9,9 @@ import {
   useIsSignedIn,
   useSignOut,
   useEvmAddress,
+  User,
 } from '@coinbase/cdp-hooks';
+import { Address } from 'viem';
 
 interface AuthContextType {
   email: string;
@@ -17,9 +19,9 @@ interface AuthContextType {
   flowId: string | null;
   isEmailPending: boolean;
   isVerifyPending: boolean;
-  currentUser: any;
+  currentUser: User | null;
   isSignedIn: boolean;
-  evmAddress: `0x${string}` | null; // Changed from string | undefined
+  evmAddress: Address | null;
   setEmail: (email: string) => void;
   setOtp: (otp: string) => void;
   handleSendOTP: (e: React.FormEvent) => Promise<void>;

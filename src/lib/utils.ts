@@ -30,7 +30,7 @@ export async function createSessionToken(
     expiresIn: 120,
   });
 
-   const payload = {
+  const payload = {
     ...request,
     clientIp: request.clientIp || '8.8.8.8',
   };
@@ -66,7 +66,7 @@ export function buildRampURL(
   const url = new URL(`https://${domain}${path}`);
 
   url.searchParams.set('sessionToken', sessionToken);
-  
+
   const allowedParams = [
     'defaultNetwork',
     'defaultAsset',
@@ -76,7 +76,7 @@ export function buildRampURL(
     'partnerUserId',
     'redirectUrl',
   ];
-  
+
   Object.entries(params).forEach(([key, value]) => {
     if (value && allowedParams.includes(key)) {
       url.searchParams.set(key, value);

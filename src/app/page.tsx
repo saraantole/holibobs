@@ -52,7 +52,7 @@ export default function Home() {
       {/* Content */}
       <div className="-mt-30 md:-mt-8 p-6 pb-10 space-y-8 bg-blue backdrop-blur-sm rounded-tr-3xl rounded-tl-3xl shadow-xl overflow-hidden">
         {/* Title Section */}
-        <div className="md:w-[80%] border-dotted border-b-2 border-b-white py-6">
+        <div className="md:w-[80%] pt-6">
           <h1 className={`text-3xl font-bold mb-3 ${caprasimo.className}`}>
             The yearly summer holiday can be expensive
           </h1>
@@ -63,7 +63,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-15">
+        <div className="grid grid-cols-1 pt-6 md:grid-cols-2 lg:grid-cols-2 gap-15 border-dotted border-t-2 border-t-white">
           {/* How it works */}
           <div>
             <h2
@@ -80,7 +80,7 @@ export default function Home() {
                     1
                   </span>
                 </div>
-                <span className="text-lg">
+                <span className="text-md">
                   Deposit into your HoliBobs holiday fund
                 </span>
               </li>
@@ -92,19 +92,19 @@ export default function Home() {
                     2
                   </span>
                 </div>
-                <span className="text-lg">
+                <span className="text-md">
                   Automatically enter raffles to win $ prizes
                 </span>
               </li>
               <li className="flex items-center gap-3">
-                <div className="bg-white rounded-full flex items-center justify-center w-10 h-10">
+                <div className="bg-white rounded-full flex items-center justify-center w-11 h-10">
                   <span
                     className={`${caprasimo.className} text-darkBlue text-xl font-bold leading-none`}
                   >
                     3
                   </span>
                 </div>
-                <span className="text-lg">
+                <span className="text-md">
                   Withdraw your funds plus any winnings at any time!
                 </span>
               </li>
@@ -202,7 +202,7 @@ export default function Home() {
           {/* Deposits & Withdrawals */}
           <div>
             <h2
-              className={`${caprasimo.className} text-darkBlue text-2xl font-bold leading-none mb-8`}
+              className={`${caprasimo.className} text-darkBlue text-2xl font-bold leading-none mb-6`}
             >
               Deposits & withdrawals
             </h2>

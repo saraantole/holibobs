@@ -19,13 +19,11 @@ export default function RootLayout({
     <html lang="en">
       <Providers>
         <GlobalStyleWrapper>
-          <body>
-            <Header />
-            <div className="max-w-4xl mx-auto overflow-x-hidden">
-              <main>{children}</main>
-              <Footer />
-            </div>
-          </body>
+          <Header />
+          <div className="max-w-4xl mx-auto overflow-x-hidden">
+            <main>{children}</main>
+            <Footer />
+          </div>
         </GlobalStyleWrapper>
       </Providers>
     </html>

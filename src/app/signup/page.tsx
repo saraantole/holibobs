@@ -39,7 +39,10 @@ export default function SignUp() {
         <p className="text-sm mb-2">
           We sent a 6-digit code to <strong>{email}</strong>
         </p>
-        <form onSubmit={handleVerifyOTP} className="space-y-4">
+        <form
+          onSubmit={() => handleVerifyOTP}
+          className="space-y-4 md:w-[380px] w-full"
+        >
           <input
             type="text"
             placeholder="000000"
@@ -75,7 +78,7 @@ export default function SignUp() {
   return (
     <div className="w-full pt-30 p-5 bg-blue flex flex-col items-center">
       <h1 className={`text-3xl font-bold mb-6 ${caprasimo.className}`}>
-        Let's get some details
+        Let&apos;s get some details
       </h1>
       <form onSubmit={handleSendOTP} className="space-y-4 md:w-[380px] w-full">
         <div>
