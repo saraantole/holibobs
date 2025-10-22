@@ -9,12 +9,14 @@ import PiggyBank from '@/assets/images/piggybank-nobg.png';
 import Image from 'next/image';
 import { CHAIN } from '@/lib/constants';
 import { isSandbox } from '@/lib/utils';
+import { useDeposit } from '@/hooks/useDeposit';
 
 export default function Deposit() {
-  const { isSignedIn, currentUser, evmAddress } = useAuth();
+  const { isSignedIn, currentUser, evmAddress, evmSmartAddress } = useAuth();
   const { openRamp, isLoading } = useRamp();
   const [depositAmount, setDepositAmount] = useState('0');
   const router = useRouter();
+  const { deposit } = useDeposit();
 
   useEffect(() => {
     if (!isSignedIn && !currentUser) {
@@ -29,8 +31,7 @@ export default function Deposit() {
       network: CHAIN.name,
       onSuccess: async () => {
         console.log('Ramp success!');
-
-        // TODO: add to prize pool
+        deposit(BigInt(Number(depositAmount) * 10 ** 6), evmSmartAddress!);
       },
       onError: error => {
         alert(`Ramp error: ${error.message}`);
@@ -40,7 +41,7 @@ export default function Deposit() {
         if (isSandbox) {
           console.log('Ramp widget closed in sandbox mode.');
 
-          // TODO: add to prize pool
+          // In sandbox mode, simulate a deposit
         }
       },
     });

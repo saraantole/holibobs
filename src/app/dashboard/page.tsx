@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ExternalLinkIcon from '@/assets/images/external-link.svg';
+import Link from 'next/link';
 
 const plans = [
   {
@@ -62,12 +63,18 @@ export default function Dashboard() {
 
       {/* Action Buttons */}
       <div className="grid grid-cols-2 gap-4 my-6">
-        <button className="w-full rounded-full bg-blue text-darkBlue px-4 py-3 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer">
+        <Link
+          href="/dashboard/deposit"
+          className="w-full rounded-full bg-blue text-darkBlue px-4 py-3 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer"
+        >
           Top Up
-        </button>
-        <button className="w-full rounded-full bg-blue text-darkBlue px-4 py-3 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer">
+        </Link>
+        <Link
+          href="/dashboard/withdraw"
+          className="w-full rounded-full bg-blue text-darkBlue px-4 py-3 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer"
+        >
           Withdraw
-        </button>
+        </Link>
       </div>
 
       {/* Upcoming Draw */}

@@ -9,12 +9,14 @@ import Image from 'next/image';
 import { CHAIN } from '@/lib/constants';
 import { isSandbox } from '@/lib/utils';
 import { useRamp } from '@/hooks/useRamp';
+import { useDeposit } from '@/hooks/useDeposit';
 
 export default function Withdraw() {
-  const { isSignedIn, currentUser, evmAddress } = useAuth();
+  const { isSignedIn, currentUser, evmAddress, evmSmartAddress } = useAuth();
   const { openRamp, isLoading } = useRamp();
   const [withdrawAmount, setWithdrawAmount] = useState('0');
   const router = useRouter();
+  const { withdraw } = useDeposit();
 
   useEffect(() => {
     if (!isSignedIn && !currentUser) {
@@ -23,25 +25,34 @@ export default function Withdraw() {
   }, [isSignedIn, currentUser, router]);
 
   const handleWithdraw = async () => {
-    // TODO: withdraw from prize pool
+    let receipt;
 
-    await openRamp({
-      type: 'offramp',
-      amount: withdrawAmount,
-      network: CHAIN.name,
-      onSuccess: async () => {
-        console.log('Withdrawal success!');
-      },
-      onError: error => {
-        alert(`Withdrawal error: ${error.message}`);
-        console.error('Withdrawal error:', error.message);
-      },
-      onClose: () => {
-        if (isSandbox) {
-          console.log('Ramp widget closed in sandbox mode.');
-        }
-      },
-    });
+    if (!isSandbox) {
+      receipt = await withdraw(
+        BigInt(Number(withdrawAmount) * 10 ** 6),
+        evmSmartAddress!
+      );
+    }
+
+    if (isSandbox || receipt) {
+      await openRamp({
+        type: 'offramp',
+        amount: withdrawAmount,
+        network: CHAIN.name,
+        onSuccess: async () => {
+          console.log('Withdrawal success!');
+        },
+        onError: error => {
+          alert(`Withdrawal error: ${error.message}`);
+          console.error('Withdrawal error:', error.message);
+        },
+        onClose: () => {
+          if (isSandbox) {
+            console.log('Ramp widget closed in sandbox mode.');
+          }
+        },
+      });
+    }
   };
 
   return (
