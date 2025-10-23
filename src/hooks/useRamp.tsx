@@ -8,8 +8,9 @@ import React, {
   useRef,
   useEffect,
 } from 'react';
-import { useAuth } from '@/hooks/useAuth'; // assuming you want to access auth info in ramp flow
+import { useAuth } from '@/hooks/useAuth';
 import { buildRampURL } from '@/lib/utils';
+import { baseChain } from '@/lib/constants';
 
 interface RampContextType {
   openRamp: (params: {
@@ -121,7 +122,7 @@ export function RampProvider({ children }: { children: ReactNode }) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          addresses: [{ address: evmAddress, blockchains: ['base'] }], // adjust blockchain/network here
+          addresses: [{ address: evmAddress, blockchains: [baseChain.name] }],
           assets: ['USDC'],
         }),
       });
@@ -129,7 +130,7 @@ export function RampProvider({ children }: { children: ReactNode }) {
       const { token } = await response.json();
 
       const rampURL = buildRampURL(params.type, token, {
-        defaultNetwork: params.network || 'base-sepolia',
+        defaultNetwork: params.network,
         defaultAsset: 'USDC',
         fiatCurrency: 'USD',
         ...(params.type === 'onramp'

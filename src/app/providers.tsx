@@ -1,6 +1,7 @@
 'use client';
 
 import { AuthProvider } from '@/hooks/useAuth';
+import { TransactionProvider } from '@/hooks/useTransaction';
 import { RampProvider } from '@/hooks/useRamp';
 import { CDPHooksProvider } from '@coinbase/cdp-hooks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -21,7 +22,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         }}
       >
         <AuthProvider>
-          <RampProvider>{children}</RampProvider>
+          <RampProvider>
+            <TransactionProvider>{children}</TransactionProvider>
+          </RampProvider>
         </AuthProvider>
       </CDPHooksProvider>
     </QueryClientProvider>

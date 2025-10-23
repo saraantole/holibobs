@@ -9,7 +9,7 @@ export default function Header() {
       <div className="max-w-4xl mx-auto flex justify-between items-center px-5 py-5">
         <div className="bg-orange rounded-full flex items-center justify-center w-9 h-9">
           <span
-            className={`${caprasimo.className} text-white text-xl font-bold leading-none -mb-[3px]`}
+            className={`${caprasimo.className} text-white text-xl font-bold leading-none -mb-[2px]`}
           >
             H
           </span>

@@ -40,7 +40,7 @@ export default function SignUp() {
           We sent a 6-digit code to <strong>{email}</strong>
         </p>
         <form
-          onSubmit={() => handleVerifyOTP}
+          onSubmit={handleVerifyOTP}
           className="space-y-4 md:w-[380px] w-full"
         >
           <input
@@ -55,7 +55,7 @@ export default function SignUp() {
           <button
             type="submit"
             disabled={isVerifyPending || otp.length !== 6}
-            className="w-full rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer"
+            className="w-full rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer disabled:opacity-50"
           >
             {isVerifyPending ? 'Verifying...' : 'Continue'}
           </button>
@@ -95,7 +95,7 @@ export default function SignUp() {
         <button
           type="submit"
           disabled={isEmailPending || !email}
-          className="w-full rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer"
+          className="w-full rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer disabled:opacity-50"
         >
           {isEmailPending ? 'Sending...' : 'Next'}
         </button>
