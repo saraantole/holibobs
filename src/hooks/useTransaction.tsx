@@ -7,6 +7,7 @@ import { CHAIN, CONTRACTS } from '@/lib/constants';
 import { SendEvmTransactionWithEndUserAccountBodyNetwork } from '@coinbase/cdp-core';
 import { isSandbox } from '@/lib/utils';
 
+/* eslint-disable  @typescript-eslint/no-explicit-any */
 interface TransactionContextType {
   deposit: (amount: bigint, receiver: Address) => Promise<any>;
   withdraw: (amount: bigint, receiver: Address) => Promise<any>;
