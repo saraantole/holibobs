@@ -69,15 +69,22 @@ export default function Home() {
       setHolders(h.holders);
       setTransfers(t.transfers);
       setWinners(
-        w.winners.map((winner: any) => ({
-          address: winner.to,
-          amountWon: `$${winner.amount}`,
-          date: new Date(winner.timestamp).toLocaleDateString('en-US', {
-            day: 'numeric',
-            month: 'short',
-          }),
-          hash: winner.txHash,
-        }))
+        w.winners.map(
+          (winner: {
+            to: string;
+            amount: string;
+            timestamp: string;
+            txHash: string;
+          }) => ({
+            address: winner.to,
+            amountWon: `$${winner.amount}`,
+            date: new Date(winner.timestamp).toLocaleDateString('en-US', {
+              day: 'numeric',
+              month: 'short',
+            }),
+            hash: winner.txHash,
+          })
+        )
       );
     }
     load();
@@ -222,28 +229,33 @@ export default function Home() {
               {transfers.length === 0 ? (
                 <p>No recent deposits or withdrawals</p>
               ) : (
-                transfers.map((tx: any, index: number) => (
-                  <div
-                    key={index}
-                    className="flex justify-between items-center py-3 border-t border-blue"
-                  >
-                    <span>
-                      {tx.type === 'deposit' ? 'Deposit' : 'Withdrawal'} of $
-                      {tx.value.toFixed(2)}
-                    </span>
-                    <a
-                      href={`https://basescan.org/tx/${tx.hash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                transfers.map(
+                  (
+                    tx: { type: string; value: number; hash: string },
+                    index: number
+                  ) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center py-3 border-t border-blue"
                     >
-                      <Image
-                        src={ExternalLinkIcon}
-                        alt="External Link"
-                        className="w-4 h-4 text-darkBlue"
-                      />
-                    </a>
-                  </div>
-                ))
+                      <span>
+                        {tx.type === 'deposit' ? 'Deposit' : 'Withdrawal'} of $
+                        {tx.value.toFixed(2)}
+                      </span>
+                      <a
+                        href={`https://basescan.org/tx/${tx.hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          src={ExternalLinkIcon}
+                          alt="External Link"
+                          className="w-4 h-4 text-darkBlue"
+                        />
+                      </a>
+                    </div>
+                  )
+                )
               )}
             </div>
           </div>
