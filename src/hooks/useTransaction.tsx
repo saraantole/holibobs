@@ -15,6 +15,8 @@ interface TransactionContextType {
   data: any;
   error: any;
   isProcessing: boolean;
+  balance: number | null;
+  setBalance: (balance: number | null) => void;
 }
 
 const prizeVaultAbi = [
@@ -63,6 +65,7 @@ const usdcAddress = CONTRACTS.token;
 export function TransactionProvider({ children }: { children: ReactNode }) {
   const { sendUserOperation, status, data, error } = useSendUserOperation();
   const [isProcessing, setIsProcessing] = useState(false);
+  const [balance, setBalance] = useState<number | null>(null);
 
   const deposit = async (amount: bigint, smartAccount: Address) => {
     const approveData = encodeFunctionData({
@@ -81,6 +84,7 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
 
     if (isSandbox) {
       console.log('Sandbox mode: Skipping actual user operation send.');
+      setIsProcessing(false);
       return { userOperationHash: '0xsandboxmodehash' };
     }
 
@@ -140,7 +144,16 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
 
   return (
     <TransactionContext.Provider
-      value={{ deposit, withdraw, status, data, error, isProcessing }}
+      value={{
+        deposit,
+        withdraw,
+        status,
+        data,
+        error,
+        isProcessing,
+        balance,
+        setBalance,
+      }}
     >
       {children}
     </TransactionContext.Provider>

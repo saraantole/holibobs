@@ -17,7 +17,7 @@ export default function Withdraw() {
   const { openRamp, isLoading } = useRamp();
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const router = useRouter();
-  const { withdraw, isProcessing } = useTransaction();
+  const { withdraw, isProcessing, balance, setBalance } = useTransaction();
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -42,6 +42,7 @@ export default function Withdraw() {
         network: CHAIN.name,
         onSuccess: async () => {
           console.log('Withdrawal success!');
+          setBalance((balance ?? 0) - Number(withdrawAmount));
           setSuccess(true);
         },
         onError: error => {
@@ -51,6 +52,7 @@ export default function Withdraw() {
         onClose: () => {
           if (isSandbox) {
             console.log('Ramp widget closed in sandbox mode.');
+            setBalance((balance ?? 0) - Number(withdrawAmount));
             setSuccess(true);
           }
         },
@@ -80,7 +82,7 @@ export default function Withdraw() {
                 type="number"
                 value={withdrawAmount}
                 onChange={e => setWithdrawAmount(e.target.value)}
-                placeholder="100"
+                placeholder={balance ? balance.toString() : '100'}
                 min="1"
                 step="0.01"
                 className="w-full px-4 py-4 border border-darkBlue rounded-full bg-white"

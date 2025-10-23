@@ -17,7 +17,7 @@ export default function Deposit() {
   const { openRamp, isLoading } = useRamp();
   const [depositAmount, setDepositAmount] = useState('');
   const router = useRouter();
-  const { deposit, isProcessing } = useTransaction();
+  const { deposit, isProcessing, balance, setBalance } = useTransaction();
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
@@ -41,6 +41,7 @@ export default function Deposit() {
         if (hash) {
           console.log('Deposit success!');
           setSuccess(true);
+          setBalance((balance ?? 0) + Number(depositAmount));
         }
       },
       onError: error => {
@@ -55,12 +56,13 @@ export default function Deposit() {
             evmSmartAddress!
           );
           console.log('Dummy deposit transaction hash:', hash);
+          setBalance((balance ?? 0) + Number(depositAmount));
 
           if (hash) {
             setTimeout(() => {
               setSuccess(true);
               console.log('Deposit success in sandbox mode!');
-            }, 5000);
+            }, 1000);
           }
         }
       },
@@ -89,7 +91,7 @@ export default function Deposit() {
                 type="number"
                 value={depositAmount}
                 onChange={e => setDepositAmount(e.target.value)}
-                placeholder="100"
+                placeholder={balance ? balance.toString() : '100'}
                 min="1"
                 step="0.01"
                 className="w-full px-4 py-4 border border-darkBlue rounded-full bg-white"

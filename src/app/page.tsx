@@ -83,8 +83,6 @@ export default function Home() {
     load();
   }, []);
 
-  console.log(winners);
-
   return (
     <div>
       {/* Hero Section with Piggy Bank */}

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ExternalLinkIcon from '@/assets/images/external-link.svg';
 import Link from 'next/link';
+import { useTransaction } from '@/hooks/useTransaction';
 
 const amounts = [
   {
@@ -33,8 +34,8 @@ const amounts = [
 ];
 
 export default function Dashboard() {
-  const [balance] = useState(2000.0);
   const { isSignedIn, handleSignOut, currentUser } = useAuth();
+  const { balance } = useTransaction();
   const router = useRouter();
 
   useEffect(() => {
@@ -42,6 +43,8 @@ export default function Dashboard() {
       router.replace('/');
     }
   }, [isSignedIn, currentUser]);
+
+  console.log('Current balance:', balance);
 
   return (
     <div className="w-full pt-30 p-5 md:w-[380px] w-full mx-auto">
@@ -58,7 +61,7 @@ export default function Dashboard() {
 
       {/* Savings Balance */}
       <div className={`${caprasimo.className} text-5xl`}>
-        ${balance.toFixed(2)}
+        ${balance ? balance.toFixed(2) : '0.00'}
       </div>
 
       {/* Action Buttons */}
