@@ -9,8 +9,15 @@ import ExternalLinkIcon from '@/assets/images/external-link.svg';
 import Chart from '@/assets/images/chart.svg';
 import { caprasimo, newsReader } from '@/assets/fonts';
 import { useAuth } from '@/hooks/useAuth';
+import { useEffect, useState } from 'react';
 
-const plans = [
+const steps = [
+  'Deposit into your HoliBobs holiday fund',
+  'Automatically enter raffles to win $ prizes',
+  'Withdraw your funds plus any winnings at any time!',
+];
+
+const amounts = [
   {
     price: '$90',
     frequency: '16 times per day',
@@ -34,8 +41,50 @@ const plans = [
   },
 ];
 
+type Winner = {
+  address: string;
+  amountWon: string;
+  date: string;
+  hash: string;
+};
+
 export default function Home() {
   const { isSignedIn, currentUser } = useAuth();
+  const [supply, setSupply] = useState('0');
+  const [holders, setHolders] = useState('0');
+  const [transfers, setTransfers] = useState([]);
+
+  const [winners, setWinners] = useState<Winner[]>([]);
+
+  useEffect(() => {
+    async function load() {
+      const [s, h, t, w] = await Promise.all([
+        fetch('/api/vault/totalSupply').then(r => r.json()),
+        fetch('/api/vault/totalHolders').then(r => r.json()),
+        fetch('/api/vault/tokenTransfers').then(r => r.json()),
+        fetch('/api/vault/latestWinners').then(r => r.json()),
+      ]);
+
+      setSupply(s.totalSupply);
+      setHolders(h.holders);
+      setTransfers(t.transfers);
+      setWinners(
+        w.winners.map((winner: any) => ({
+          address: winner.to,
+          amountWon: `$${winner.amount}`,
+          date: new Date(winner.timestamp).toLocaleDateString('en-US', {
+            day: 'numeric',
+            month: 'short',
+          }),
+          hash: winner.txHash,
+        }))
+      );
+    }
+    load();
+  }, []);
+
+  console.log(winners);
+
   return (
     <div>
       {/* Hero Section with Piggy Bank */}
@@ -72,42 +121,18 @@ export default function Home() {
               How HoliBobs works
             </h2>
             <ul className="space-y-6 text-sm">
-              <li className="flex items-center gap-3">
-                <div className="bg-white rounded-full flex items-center justify-center w-10 h-10">
-                  <span
-                    className={`${caprasimo.className} text-darkBlue text-xl font-bold leading-none`}
-                  >
-                    1
-                  </span>
-                </div>
-                <span className="text-md">
-                  Deposit into your HoliBobs holiday fund
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="bg-white rounded-full flex items-center justify-center w-10 h-10">
-                  <span
-                    className={`${caprasimo.className} text-darkBlue text-xl font-bold leading-none`}
-                  >
-                    2
-                  </span>
-                </div>
-                <span className="text-md">
-                  Automatically enter raffles to win $ prizes
-                </span>
-              </li>
-              <li className="flex items-center gap-3">
-                <div className="bg-white rounded-full flex items-center justify-center w-11 h-10">
-                  <span
-                    className={`${caprasimo.className} text-darkBlue text-xl font-bold leading-none`}
-                  >
-                    3
-                  </span>
-                </div>
-                <span className="text-md">
-                  Withdraw your funds plus any winnings at any time!
-                </span>
-              </li>
+              {steps.map((step, index) => (
+                <li key={index} className="flex items-center gap-3">
+                  <div className="bg-white rounded-full flex items-center justify-center w-10 h-10">
+                    <span
+                      className={`${caprasimo.className} text-darkBlue text-xl font-bold leading-none`}
+                    >
+                      {index + 1}
+                    </span>
+                  </div>
+                  <span className="text-md">{step}</span>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -119,18 +144,18 @@ export default function Home() {
               Savers get a chance to win
             </h2>
             <div className="flex items-center justify-between mb-6">
-              {plans.map((plan, index) => (
+              {amounts.map((amount, index) => (
                 <div
                   key={index}
-                  className={`w-26 h-26 rounded-2xl bg-gradient-to-br ${plan.gradient} shadow-lg flex flex-col items-center justify-center p-2 ${plan.borderColor} border-2`}
+                  className={`w-26 h-26 rounded-2xl bg-gradient-to-br ${amount.gradient} shadow-lg flex flex-col items-center justify-center p-2 ${amount.borderColor} border-2`}
                 >
                   <h2
-                    className={`${caprasimo.className} text-lg font-bold ${plan.textColor} mb-2`}
+                    className={`${caprasimo.className} text-lg font-bold ${amount.textColor} mb-2`}
                   >
-                    {plan.price}
+                    {amount.price}
                   </h2>
-                  <p className={`text-xs ${plan.textColor} text-center`}>
-                    {plan.frequency}
+                  <p className={`text-xs ${amount.textColor} text-center`}>
+                    {amount.frequency}
                   </p>
                 </div>
               ))}
@@ -157,45 +182,34 @@ export default function Home() {
               Previous winners
             </h2>
             <div className="text-sm pb-4">
-              <div className="flex justify-between items-center py-3 border-t border-blue">
-                <span className="">$20 depositor</span>
-                <div className="flex">
-                  <span className="pr-2">Won $2093, 15 Oct</span>
-                  <a href="">
-                    <Image
-                      src={ExternalLinkIcon}
-                      alt="External Link"
-                      className="w-4 h-4 text-darkBlue"
-                    />
-                  </a>
+              {winners?.map((winner, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center py-3 border-t border-blue"
+                >
+                  <span>
+                    {winner.address.slice(0, 6) +
+                      '...' +
+                      winner.address.slice(-4)}
+                  </span>
+                  <div className="flex">
+                    <span className="pr-2">
+                      Won {winner.amountWon}, {winner.date}
+                    </span>
+                    <a
+                      href={`https://basescan.org/tx/${winner.hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Image
+                        src={ExternalLinkIcon}
+                        alt="External Link"
+                        className="w-4 h-4 text-darkBlue"
+                      />
+                    </a>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-between items-center py-3 border-t border-blue">
-                <span className="">$120 depositor</span>
-                <div className="flex">
-                  <span className="pr-2">Won $100, 14 Oct</span>
-                  <a href="">
-                    <Image
-                      src={ExternalLinkIcon}
-                      alt="External Link"
-                      className="w-4 h-4 text-darkBlue"
-                    />
-                  </a>
-                </div>
-              </div>
-              <div className="flex justify-between items-center py-3 border-t border-blue">
-                <span className="">$200 depositor</span>
-                <div className="flex">
-                  <span className="pr-2">Won $10, 13 Oct</span>
-                  <a href="">
-                    <Image
-                      src={ExternalLinkIcon}
-                      alt="External Link"
-                      className="w-4 h-4 text-darkBlue"
-                    />
-                  </a>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
@@ -207,36 +221,32 @@ export default function Home() {
               Deposits & withdrawals
             </h2>
             <div className="text-sm pb-4">
-              <div className="flex justify-between items-center py-3 border-t border-blue">
-                <span className="">$20 depositor</span>
-                <a href="">
-                  <Image
-                    src={ExternalLinkIcon}
-                    alt="External Link"
-                    className="w-4 h-4 text-darkBlue"
-                  />
-                </a>
-              </div>
-              <div className="flex justify-between items-center py-3 border-t border-blue">
-                <span className="">$120 depositor</span>
-                <a href="">
-                  <Image
-                    src={ExternalLinkIcon}
-                    alt="External Link"
-                    className="w-4 h-4 text-darkBlue"
-                  />
-                </a>
-              </div>
-              <div className="flex justify-between items-center py-3 border-t border-blue">
-                <span className="">$200 depositor</span>
-                <a href="">
-                  <Image
-                    src={ExternalLinkIcon}
-                    alt="External Link"
-                    className="w-4 h-4 text-darkBlue"
-                  />
-                </a>
-              </div>
+              {transfers.length === 0 ? (
+                <p>No recent deposits or withdrawals</p>
+              ) : (
+                transfers.map((tx: any, index: number) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-3 border-t border-blue"
+                  >
+                    <span>
+                      {tx.type === 'deposit' ? 'Deposit' : 'Withdrawal'} of $
+                      {tx.value.toFixed(2)}
+                    </span>
+                    <a
+                      href={`https://basescan.org/tx/${tx.hash}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <Image
+                        src={ExternalLinkIcon}
+                        alt="External Link"
+                        className="w-4 h-4 text-darkBlue"
+                      />
+                    </a>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -280,9 +290,12 @@ export default function Home() {
               />
               <div className="text-darkBlue absolute text-center">
                 <span className={`${caprasimo.className} text-lg`}>
-                  $823,000
+                  $
+                  {supply?.split('.')[0] +
+                    '.' +
+                    supply?.split('.')[1]?.slice(0, 2)}
                 </span>
-                <span className="block text-xs">1,200 depositors</span>
+                <span className="block text-xs">{holders} depositors</span>
               </div>
             </div>
           </div>

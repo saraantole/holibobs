@@ -8,7 +8,7 @@ import { useEffect, useState } from 'react';
 import ExternalLinkIcon from '@/assets/images/external-link.svg';
 import Link from 'next/link';
 
-const plans = [
+const amounts = [
   {
     price: '$90',
     frequency: '16 times per day',
@@ -82,18 +82,18 @@ export default function Dashboard() {
         <h2 className={`${caprasimo.className} text-3xl`}>Upcoming draw</h2>
         <p className="text-sm my-2">In 2 hrs, 27 mins, 40 seconds</p>
         <div className="flex items-center justify-between mb-8">
-          {plans.map((plan, index) => (
+          {amounts.map((amount, index) => (
             <div
               key={index}
-              className={`w-26 h-26 rounded-2xl bg-gradient-to-br ${plan.gradient} shadow-lg flex flex-col items-center justify-center p-2 ${plan.borderColor} border-2`}
+              className={`w-26 h-26 rounded-2xl bg-gradient-to-br ${amount.gradient} shadow-lg flex flex-col items-center justify-center p-2 ${amount.borderColor} border-2`}
             >
               <h2
-                className={`${caprasimo.className} text-lg font-bold ${plan.textColor} mb-2`}
+                className={`${caprasimo.className} text-lg font-bold ${amount.textColor} mb-2`}
               >
-                {plan.price}
+                {amount.price}
               </h2>
-              <p className={`text-xs ${plan.textColor} text-center`}>
-                {plan.frequency}
+              <p className={`text-xs ${amount.textColor} text-center`}>
+                {amount.frequency}
               </p>
             </div>
           ))}
