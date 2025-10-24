@@ -53,7 +53,7 @@ export async function GET() {
 
     winners = winners.slice(0, 3).map(winner => ({
       ...winner,
-      amountUSD: winner.amount * tokenPriceUSD,
+      amountUSD: (winner.amount * tokenPriceUSD).toFixed(2).toString(),
     }));
 
     return Response.json({ winners });

@@ -77,7 +77,7 @@ export default function Home() {
             txHash: string;
           }) => ({
             address: winner.to,
-            amountWon: `$${winner.amountUSD.toFixed(2)}`,
+            amountWon: winner.amountUSD,
             date: new Date(winner.timestamp).toLocaleDateString('en-US', {
               day: 'numeric',
               month: 'short',
@@ -200,7 +200,7 @@ export default function Home() {
                     </span>
                     <div className="flex">
                       <span className="pr-2">
-                        Won {winner.amountWon}, {winner.date}
+                        Won ${winner.amountWon}, {winner.date}
                       </span>
                       <a
                         href={`https://basescan.org/tx/${winner.hash}`}
