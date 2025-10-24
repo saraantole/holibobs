@@ -33,6 +33,21 @@ const amounts = [
   },
 ];
 
+const mockPreviousDraws = [
+  {
+    amount: '$1200',
+    date: '16 Oct',
+    won: '$200.00',
+    txHash: '0xabc123...',
+  },
+  {
+    amount: '$200',
+    date: '15 Oct',
+    won: 'No win',
+    txHash: '0xdef456...',
+  },
+];
+
 export default function Dashboard() {
   const { isSignedIn, handleSignOut, currentUser } = useAuth();
   const { balance } = useTransaction();
@@ -43,8 +58,6 @@ export default function Dashboard() {
       router.replace('/');
     }
   }, [isSignedIn, currentUser]);
-
-  console.log('Current balance:', balance);
 
   return (
     <div className="w-full pt-30 p-5 md:w-[380px] w-full mx-auto">
@@ -109,38 +122,29 @@ export default function Dashboard() {
           My previous draws
         </h2>
         <div className="text-sm">
-          <div className="flex justify-between py-3 border-t border-white">
-            <span className="">$1200</span>
-            <div className="text-right">
-              <div className="flex">
-                <span className="pr-2">Participated in draw on 16 Oct</span>
-                <a href="">
-                  <Image
-                    src={ExternalLinkIcon}
-                    alt="External Link"
-                    className="w-4 h-4 text-darkBlue"
-                  />
-                </a>
+          {mockPreviousDraws.map((draw, index) => (
+            <div
+              key={index}
+              className="flex justify-between py-3 border-t border-white"
+            >
+              <span className="">{draw.amount}</span>
+              <div className="text-right">
+                <div className="flex">
+                  <span className="pr-2">
+                    Participated in draw on {draw.date}
+                  </span>
+                  <a href="">
+                    <Image
+                      src={ExternalLinkIcon}
+                      alt="External Link"
+                      className="w-4 h-4 text-darkBlue"
+                    />
+                  </a>
+                </div>
+                <span>Won {draw.won}</span>
               </div>
-              <span>Won $200.00</span>
             </div>
-          </div>
-          <div className="flex justify-between py-3 border-t border-white">
-            <span className="">$200</span>
-            <div className="text-right">
-              <div className="flex">
-                <span className="pr-2">Participated in draw on 15 Oct</span>
-                <a href="">
-                  <Image
-                    src={ExternalLinkIcon}
-                    alt="External Link"
-                    className="w-4 h-4 text-darkBlue"
-                  />
-                </a>
-              </div>
-              <span>No win</span>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { generateJwt } from '@coinbase/cdp-sdk/auth';
+import { baseChain } from './constants';
 
 export type RampType = 'onramp' | 'offramp';
 
@@ -84,4 +85,23 @@ export function buildRampURL(
   });
 
   return url.toString();
+}
+
+export async function getPrice(
+  apiKey: string,
+  tokenAddress: string
+): Promise<number> {
+  const priceRes = await fetch(
+    `https://deep-index.moralis.io/api/v2.2/erc20/${tokenAddress}/price?chain=${baseChain.name}`,
+    {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        'X-API-Key': apiKey,
+      },
+    }
+  );
+  const priceData = await priceRes.json();
+  const tokenPriceUSD = priceData.usdPrice;
+  return tokenPriceUSD;
 }

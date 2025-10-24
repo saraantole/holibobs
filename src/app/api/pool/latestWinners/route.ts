@@ -1,8 +1,9 @@
 import { baseChain, prizePoolAddress } from '@/lib/constants';
+import { getPrice } from '@/lib/utils';
 
 export async function GET() {
   const address = prizePoolAddress.mainnet;
-  const apiKey = process.env.MORALIS_API_KEY;
+  const apiKey = process.env.MORALIS_API_KEY as string;
   const chain = baseChain.name;
 
   try {
@@ -13,14 +14,14 @@ export async function GET() {
         method: 'GET',
         headers: {
           accept: 'application/json',
-          'X-API-Key': apiKey as string,
+          'X-API-Key': apiKey,
         },
       }
     );
 
     const data = await res.json();
 
-    const winners = [];
+    let winners = [];
 
     for (const tx of data.result || []) {
       for (const log of tx.logs || []) {
@@ -46,7 +47,16 @@ export async function GET() {
       }
     }
 
-    return Response.json({ winners: winners.slice(0, 3) });
+    const WETHTokenAddress = '0x4200000000000000000000000000000000000006';
+
+    const tokenPriceUSD = await getPrice(apiKey, WETHTokenAddress);
+
+    winners = winners.slice(0, 3).map(winner => ({
+      ...winner,
+      amountUSD: winner.amount * tokenPriceUSD,
+    }));
+
+    return Response.json({ winners });
   } catch (err) {
     console.error(err);
     return Response.json(

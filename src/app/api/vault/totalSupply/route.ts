@@ -23,7 +23,9 @@ export async function GET() {
     const token = data[0];
 
     return Response.json({
-      totalSupply: token.total_supply_formatted,
+      totalSupply: (Number(token.total_supply_formatted) * 0.2) // assuming POOL to USD conversion rate is 0.2 https://basescan.org/address/0xd652C5425aea2Afd5fb142e120FeCf79e18fafc3
+        .toFixed(2)
+        .toString(),
     });
   } catch (err) {
     console.error(err);

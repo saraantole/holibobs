@@ -50,7 +50,7 @@ type Winner = {
 
 export default function Home() {
   const { isSignedIn, currentUser } = useAuth();
-  const [supply, setSupply] = useState('0');
+  const [supply, setSupply] = useState('0.00');
   const [holders, setHolders] = useState('0');
   const [transfers, setTransfers] = useState([]);
 
@@ -62,7 +62,7 @@ export default function Home() {
         fetch('/api/vault/totalSupply').then(r => r.json()),
         fetch('/api/vault/totalHolders').then(r => r.json()),
         fetch('/api/vault/tokenTransfers').then(r => r.json()),
-        fetch('/api/vault/latestWinners').then(r => r.json()),
+        fetch('/api/pool/latestWinners').then(r => r.json()),
       ]);
 
       setSupply(s.totalSupply);
@@ -71,13 +71,13 @@ export default function Home() {
       setWinners(
         w.winners.map(
           (winner: {
+            amountUSD: string;
             to: string;
-            amount: string;
             timestamp: string;
             txHash: string;
           }) => ({
             address: winner.to,
-            amountWon: `$${winner.amount}`,
+            amountWon: `$${winner.amountUSD.toFixed(2)}`,
             date: new Date(winner.timestamp).toLocaleDateString('en-US', {
               day: 'numeric',
               month: 'short',
@@ -187,34 +187,38 @@ export default function Home() {
               Previous winners
             </h2>
             <div className="text-sm pb-4">
-              {winners?.map((winner, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center py-3 border-t border-blue"
-                >
-                  <span>
-                    {winner.address.slice(0, 6) +
-                      '...' +
-                      winner.address.slice(-4)}
-                  </span>
-                  <div className="flex">
-                    <span className="pr-2">
-                      Won {winner.amountWon}, {winner.date}
+              {winners.length > 0 ? (
+                winners.map((winner, index) => (
+                  <div
+                    key={index}
+                    className="flex justify-between items-center py-3 border-t border-blue"
+                  >
+                    <span>
+                      {winner.address.slice(0, 6) +
+                        '...' +
+                        winner.address.slice(-4)}
                     </span>
-                    <a
-                      href={`https://basescan.org/tx/${winner.hash}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <Image
-                        src={ExternalLinkIcon}
-                        alt="External Link"
-                        className="w-4 h-4 text-darkBlue"
-                      />
-                    </a>
+                    <div className="flex">
+                      <span className="pr-2">
+                        Won {winner.amountWon}, {winner.date}
+                      </span>
+                      <a
+                        href={`https://basescan.org/tx/${winner.hash}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <Image
+                          src={ExternalLinkIcon}
+                          alt="External Link"
+                          className="w-4 h-4 text-darkBlue"
+                        />
+                      </a>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <p>No winners yet</p>
+              )}
             </div>
           </div>
 
@@ -240,7 +244,7 @@ export default function Home() {
                     >
                       <span>
                         {tx.type === 'deposit' ? 'Deposit' : 'Withdrawal'} of $
-                        {tx.value.toFixed(2)}
+                        {tx.value}
                       </span>
                       <a
                         href={`https://basescan.org/tx/${tx.hash}`}
@@ -300,10 +304,7 @@ export default function Home() {
               />
               <div className="text-darkBlue absolute text-center">
                 <span className={`${caprasimo.className} text-lg`}>
-                  $
-                  {supply?.split('.')[0] +
-                    '.' +
-                    supply?.split('.')[1]?.slice(0, 2)}
+                  ${supply}
                 </span>
                 <span className="block text-xs">{holders} depositors</span>
               </div>

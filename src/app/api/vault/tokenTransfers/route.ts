@@ -35,7 +35,7 @@ export async function GET() {
           block_timestamp: string;
         }) => ({
           hash: tx.transaction_hash,
-          value: Number(tx.value) / 1e18,
+          value: ((Number(tx.value) / 1e18) * 0.2).toFixed(2).toString(),
           type: tx.from_address === ZERO ? 'deposit' : 'withdrawal',
           timestamp: tx.block_timestamp,
         })
