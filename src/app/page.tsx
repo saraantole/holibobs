@@ -69,7 +69,7 @@ export default function Home() {
       setHolders(h.holders);
       setTransfers(t.transfers);
       setWinners(
-        w.winners.map(
+        w?.winners?.map(
           (winner: {
             amountUSD: string;
             to: string;
