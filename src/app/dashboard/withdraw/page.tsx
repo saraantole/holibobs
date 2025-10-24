@@ -40,7 +40,7 @@ export default function Withdraw() {
         type: 'offramp',
         amount: withdrawAmount,
         network: CHAIN.name,
-        redirectUrl: `${window.location.origin}/dashboard/withdraw`,
+        redirectUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/withdraw`,
         onSuccess: async () => {
           console.log('Withdrawal success!');
           setBalance((balance ?? 0) - Number(withdrawAmount));
