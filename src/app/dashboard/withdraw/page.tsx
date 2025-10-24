@@ -87,7 +87,7 @@ export default function Withdraw() {
                 min="1"
                 step="0.01"
                 className="w-full px-4 py-4 border border-darkBlue rounded-full bg-white"
-                disabled={isLoading || isProcessing || balance === 0}
+                disabled={isLoading || isProcessing || Number(balance) <= 0}
               />
             </div>
           </div>
@@ -98,7 +98,8 @@ export default function Withdraw() {
               !withdrawAmount ||
               Number(withdrawAmount) <= 0 ||
               isLoading ||
-              isProcessing
+              isProcessing ||
+              Number(balance) <= 0
             }
             className="w-full rounded-full bg-blue text-darkBlue px-8 py-4 text-lg font-medium inset-shadow-sm shadow-xl/30 inset-shadow-darkBlue-500 hover:bg-darkBlue hover:text-white border border-darkBlue transition text-center hover:cursor-pointer disabled:opacity-50"
           >
