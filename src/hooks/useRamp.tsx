@@ -17,6 +17,7 @@ interface RampContextType {
     type: 'onramp' | 'offramp';
     amount: string;
     network: string;
+    redirectUrl?: string;
     onSuccess?: () => void;
     onError?: (error: Error) => void;
     onClose?: () => void;
@@ -102,6 +103,7 @@ export function RampProvider({ children }: { children: ReactNode }) {
     type: 'onramp' | 'offramp';
     amount: string;
     network: string;
+    redirectUrl?: string;
     onSuccess?: () => void;
     onError?: (error: Error) => void;
     onClose?: () => void;
@@ -137,7 +139,10 @@ export function RampProvider({ children }: { children: ReactNode }) {
           ? { presetFiatAmount: params.amount }
           : { presetCryptoAmount: params.amount }),
         partnerUserId: currentUser?.userId || '',
+        redirectUrl: params.redirectUrl || '',
       });
+
+      console.log('Ramp URL:', rampURL);
 
       const popup = window.open(
         rampURL,

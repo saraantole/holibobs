@@ -40,6 +40,7 @@ export default function Withdraw() {
         type: 'offramp',
         amount: withdrawAmount,
         network: CHAIN.name,
+        redirectUrl: `${window.location.origin}/dashboard/withdraw`,
         onSuccess: async () => {
           console.log('Withdrawal success!');
           setBalance((balance ?? 0) - Number(withdrawAmount));
@@ -86,7 +87,7 @@ export default function Withdraw() {
                 min="1"
                 step="0.01"
                 className="w-full px-4 py-4 border border-darkBlue rounded-full bg-white"
-                disabled={isLoading || isProcessing}
+                disabled={isLoading || isProcessing || balance === 0}
               />
             </div>
           </div>
