@@ -15,9 +15,9 @@
     "@coinbase/cdp-sdk": "^1.38.4",
     "@generationsoftware/hyperstructure-client-js": "^1.22.2",
     "@tanstack/react-query": "^5.90.3",
-    "next": "15.5.4",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "next": "^15.5.7",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
     "viem": "^2.38.2"
   },
   "devDependencies": {
